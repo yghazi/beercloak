@@ -1,2 +1,4 @@
 /beercloak-ear/target/
 /beercloak-core/target/
+*.iml
+.idea
