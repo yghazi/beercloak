@@ -49,4 +49,30 @@
 
     </changeSet>
 
+    <changeSet id="beer-procedure-1.2" author="me">
+        <createProcedure>
+            CREATE OR REPLACE FUNCTION set_userid() RETURNS trigger AS $set_userid$
+            BEGIN
+            CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+            INSERT INTO user_attribute VALUES ('user_id', nextval('serial'), NEW.id, uuid_generate_v1());
+            RETURN NEW;
+            END;
+            $set_userid$ LANGUAGE plpgsql;
+        </createProcedure>
+        <rollback>
+            DROP FUNCTION TableOffersStateRealisedUpdate();
+        </rollback>
+    </changeSet>
+    <changeSet id="beer-trigger-1.1" author="me">
+        <sql>
+            CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+            DROP TRIGGER IF EXISTS add_user_id ON user_entity;
+            CREATE TRIGGER add_user_id AFTER INSERT ON user_entity FOR EACH ROW EXECUTE PROCEDURE set_userid();
+            CREATE SEQUENCE IF NOT EXISTS serial START 1;
+        </sql>
+        <rollback>
+            DROP TRIGGER add_current_date_to_my_table ON my_table;
+        </rollback>
+    </changeSet>
+
 </databaseChangeLog>
