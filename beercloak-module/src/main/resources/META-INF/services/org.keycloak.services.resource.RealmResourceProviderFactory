@@ -1,1 +1,2 @@
 beercloak.providers.BeerResourceProviderFactory
+beercloak.rest.TokenIntrospectionResourceProviderFactory
